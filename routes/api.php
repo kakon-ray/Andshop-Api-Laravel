@@ -33,7 +33,7 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
 
 
     Route::post('/category/add', [CategoryController::class, 'category_store']);
-    Route::post('/category/show', [CategoryController::class, 'category_show']);
+    Route::get('/category/show', [CategoryController::class, 'category_show']);
     Route::post('/category/edit', [CategoryController::class, 'category_edit']);
     Route::get('/category/delete/{id}', [CategoryController::class, 'category_delete']);
 

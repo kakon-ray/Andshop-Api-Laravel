@@ -52,19 +52,20 @@ class CategoryController extends Controller
             ]);
         } else {
             try {
-                $product = Category::create([
+                $category = Category::create([
                     'category_name' => $request->category_name,
                     'category_slug' => $slug,
 
                 ]);
             } catch (\Exception $err) {
-                $product = null;
+                $category = null;
             }
 
-            if ($product != null) {
+            if ($category != null) {
                 return response()->json([
                     'success' => true,
-                    'msg' => 'Category Created'
+                    'msg' => 'Category Created',
+                    'data' => $category
                 ]);
             } else {
                 return response()->json([
@@ -145,7 +146,9 @@ class CategoryController extends Controller
                 if ($category != null) {
                     return response()->json([
                         'success' => true,
-                        'msg' => 'Category Updated'
+                        'msg' => 'Category Updated',
+                        'data'=> $category,
+                        'id'=> $request->id
                     ]);
                 } else {
                     return response()->json([
@@ -180,7 +183,8 @@ class CategoryController extends Controller
             if ($category != null) {
                 return response()->json([
                     'success' => true,
-                    'msg' => 'Delete this Category'
+                    'msg' => 'Delete this Category',
+                    'id' => $request->id,
                 ]);
             } else {
                 return response()->json([
