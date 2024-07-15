@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class SubcategoryController extends Controller
 {
@@ -18,6 +19,30 @@ class SubcategoryController extends Controller
 
     public function sub_category_store(Request $request)
     {
+        $arrayRequest = [
+            'subcategory_name' => $request->subcategory_name,
+            'category' => $request->category,
+        ];
+
+        $arrayValidate  = [
+            'subcategory_name' => 'required',
+            'category' => 'required',
+        ];
+
+        $response = Validator::make($arrayRequest, $arrayValidate);
+
+        if ($response->fails()) {
+            $msg = '';
+            foreach ($response->getMessageBag()->toArray() as $item) {
+                $msg = $item;
+            };
+
+            return response()->json([
+                'success' => false,
+                'msg' => $msg[0]
+            ]);
+        }
+
         $slug = Str::slug($request->subcategory_name, '-');
         $exist_category = Subcategory::where('subcat_slug', $slug)->count();
 
@@ -29,7 +54,7 @@ class SubcategoryController extends Controller
         } else {
             try {
                 $product = Subcategory::create([
-                    'category_id' => $request->category_id,
+                    'category_id' => $request->category,
                     'subcategory_name' => $request->subcategory_name,
                     'subcat_slug' => $slug,
 
@@ -71,6 +96,30 @@ class SubcategoryController extends Controller
 
     public function sub_category_edit(Request $request)
     {
+        $arrayRequest = [
+            'subcategory_name' => $request->subcategory_name,
+            'category' => $request->category,
+        ];
+
+        $arrayValidate  = [
+            'subcategory_name' => 'required',
+            'category' => 'required',
+        ];
+
+        $response = Validator::make($arrayRequest, $arrayValidate);
+
+        if ($response->fails()) {
+            $msg = '';
+            foreach ($response->getMessageBag()->toArray() as $item) {
+                $msg = $item;
+            };
+
+            return response()->json([
+                'success' => false,
+                'msg' => $msg[0]
+            ]);
+        }
+
         $subcategory = Subcategory::find($request->id);
 
         if (!$subcategory) {
@@ -90,7 +139,7 @@ class SubcategoryController extends Controller
             } else {
 
                 try {
-                    $subcategory->category_id =  $request->category_id;
+                    $subcategory->category_id =  $request->category;
                     $subcategory->subcategory_name =  $request->subcategory_name;
                     $subcategory->subcat_slug =  $slug;
                     $subcategory->save();

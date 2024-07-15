@@ -5,18 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
 
     public function __construct()
     {
-      \Config::set('auth.defaults.guard', 'userbasic');
+        \Config::set('auth.defaults.guard', 'userbasic');
     }
 
 
     public function category_store(Request $request)
     {
+        $arrayRequest = [
+            'category_name' => $request->category_name,
+        ];
+
+        $arrayValidate  = [
+            'category_name' => 'required',
+        ];
+
+        $response = Validator::make($arrayRequest, $arrayValidate);
+
+        if ($response->fails()) {
+            $msg = '';
+            foreach ($response->getMessageBag()->toArray() as $item) {
+                $msg = $item;
+            };
+
+            return response()->json([
+                'success' => false,
+                'msg' => $msg[0]
+            ]);
+        }
+
+
+
         $slug = Str::slug($request->category_name, '-');
         $exist_category = Category::where('category_slug', $slug)->count();
 
@@ -69,6 +94,28 @@ class CategoryController extends Controller
 
     public function category_edit(Request $request)
     {
+        $arrayRequest = [
+            'category_name' => $request->category_name,
+        ];
+
+        $arrayValidate  = [
+            'category_name' => 'required',
+        ];
+
+        $response = Validator::make($arrayRequest, $arrayValidate);
+
+        if ($response->fails()) {
+            $msg = '';
+            foreach ($response->getMessageBag()->toArray() as $item) {
+                $msg = $item;
+            };
+
+            return response()->json([
+                'success' => false,
+                'msg' => $msg[0]
+            ]);
+        }
+
         $category = Category::find($request->id);
 
         if (!$category) {
@@ -126,7 +173,6 @@ class CategoryController extends Controller
             try {
 
                 $category->delete();
-
             } catch (\Exception $err) {
                 $category = null;
             }
