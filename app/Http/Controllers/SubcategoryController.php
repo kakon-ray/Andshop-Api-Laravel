@@ -53,38 +53,40 @@ class SubcategoryController extends Controller
             ]);
         } else {
             try {
-                $product = Subcategory::create([
+                $subcategory = Subcategory::create([
                     'category_id' => $request->category,
                     'subcategory_name' => $request->subcategory_name,
                     'subcat_slug' => $slug,
 
                 ]);
             } catch (\Exception $err) {
-                $product = null;
+                $subcategory = null;
             }
 
-            if ($product != null) {
+            if ($subcategory != null) {
                 return response()->json([
                     'success' => true,
-                    'msg' => 'Subcategory Created'
+                    'msg' => 'Subcategory Created',
+                    'subcategory'=>$subcategory
                 ]);
             } else {
                 return response()->json([
-                    'error' => 'Internal Server Error',
+                    'success' => false,
+                    'msg'=>'Internal Server Error',
                     'err_msg' => $err->getMessage()
-                ], 500);
+                ]);
             }
         }
     }
 
     public function sub_category_show(Request $request)
     {
-        $all_category = Subcategory::all();
+        $all_subcategory = Subcategory::all();
 
-        if ($all_category->count() != 0) {
+        if ($all_subcategory->count() != 0) {
             return response()->json([
                 'success' => true,
-                'category' => $all_category,
+                'subcategory' => $all_subcategory,
             ]);
         } else {
             return response()->json([
@@ -96,14 +98,16 @@ class SubcategoryController extends Controller
 
     public function sub_category_edit(Request $request)
     {
+
+
         $arrayRequest = [
             'subcategory_name' => $request->subcategory_name,
-            'category' => $request->category,
+            'category_id' => $request->category_id,
         ];
 
         $arrayValidate  = [
             'subcategory_name' => 'required',
-            'category' => 'required',
+            'category_id' => 'required',
         ];
 
         $response = Validator::make($arrayRequest, $arrayValidate);
@@ -139,7 +143,7 @@ class SubcategoryController extends Controller
             } else {
 
                 try {
-                    $subcategory->category_id =  $request->category;
+                    $subcategory->category_id =  $request->category_id;
                     $subcategory->subcategory_name =  $request->subcategory_name;
                     $subcategory->subcat_slug =  $slug;
                     $subcategory->save();
@@ -150,7 +154,9 @@ class SubcategoryController extends Controller
                 if ($subcategory != null) {
                     return response()->json([
                         'success' => true,
-                        'msg' => 'Subcategory Updated'
+                        'msg' => 'Subcategory Updated',
+                       'data'=> $subcategory,
+                        'id'=> $request->id
                     ]);
                 } else {
                     return response()->json([
@@ -185,7 +191,8 @@ class SubcategoryController extends Controller
             if ($subcategory != null) {
                 return response()->json([
                     'success' => true,
-                    'msg' => 'Delete this Subcategory'
+                    'msg' => 'Delete this Subcategory',
+                    'id' => $request->id,
                 ]);
             } else {
                 return response()->json([

@@ -39,7 +39,7 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
 
 
     Route::post('/subcategory/add', [SubcategoryController::class, 'sub_category_store']);
-    Route::post('/subcategory/show', [SubcategoryController::class, 'sub_category_show']);
+    Route::get('/subcategory/show', [SubcategoryController::class, 'sub_category_show']);
     Route::post('/subcategory/edit', [SubcategoryController::class, 'sub_category_edit']);
     Route::get('/subcategory/delete/{id}', [SubcategoryController::class, 'sub_category_delete']);
 
