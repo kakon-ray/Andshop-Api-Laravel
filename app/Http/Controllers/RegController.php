@@ -30,15 +30,14 @@ class RegController extends Controller
     {
 
         $user_exist_userbasic = UserBasic::where('email', $request->email)->count();
-     
-
 
         if ($user_exist_userbasic) {
             return response()->json([
+                'success' => false,
                 'msg' => 'User already exists',
             ]);
-        }else {
-
+            
+        } else {
 
             try {
 
@@ -48,22 +47,22 @@ class RegController extends Controller
                     'expired_at' => now()->addMinutes(15),
                     'password' => Hash::make($request->password),
                 ]);
-
-                
             } catch (\Exception $err) {
                 $user = null;
             }
 
             if ($user != null) {
-                return response()->json(['msg' => 'Registation Completed'], 200);
+                return response()->json([
+                    'success' => true,
+                    'msg' => 'Registation Completed'
+                ]);
             } else {
                 return response()->json([
                     'msg' => 'Internal Server Error',
+                    'success' => false,
                     'err_msg' => $err->getMessage()
-                ], 500);
+                ]);
             }
         }
     }
-
-
 }

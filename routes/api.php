@@ -18,7 +18,7 @@ Route::get('reset/password/{token}', [PasswordResetRequestController::class, 'sh
 Route::post('/new-password', [PasswordResetRequestController::class, 'new_password_submit'])->name('new.password.submit');
 
 
-// login and registration and check
+//admin login and registration and check
 Route::post('/sign_up', [AdminAuthController::class, 'regisign_upster'])->name('sign_up');
 Route::post('/user_login', [AdminAuthController::class, 'login'])->name('user_login');
 
@@ -45,11 +45,33 @@ Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router
     Route::get('/subcategory/delete/{id}', [SubcategoryController::class, 'sub_category_delete']);
 
 
+});
+
+
+
+// ================ user or vendor authentication ========================== 
+
+
+// user or vendor login and registration and check
+Route::post('/user/sign_up', [RegController::class, 'regisign_upster'])->name('user.sign_up');
+Route::post('/user/user_login', [ClientDashboard::class, 'login'])->name('user.user_login');
+
+
+Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($router) {
+   
     Route::post('/product/add', [ProductController::class, 'product_add']);
     Route::get('/product/show', [ProductController::class, 'product_show']);
     Route::post('/product/edit', [ProductController::class, 'product_edit']);
     Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
 });
+
+
+
+
+
+
+
+
 
 
 // google and facebook login
