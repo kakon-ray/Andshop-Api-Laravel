@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientDashboard;
@@ -18,15 +19,15 @@ Route::post('/new-password', [PasswordResetRequestController::class, 'new_passwo
 
 
 // login and registration and check
-Route::post('/sign_up', [RegController::class, 'regisign_upster'])->name('sign_up');
-Route::post('/user_login', [ClientDashboard::class, 'login'])->name('user_login');
+Route::post('/sign_up', [AdminAuthController::class, 'regisign_upster'])->name('sign_up');
+Route::post('/user_login', [AdminAuthController::class, 'login'])->name('user_login');
 
 
 // verification email
 Route::post('/email-verified', [RegController::class, 'email_verified'])->name('email_verified');
 
 
-Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($router) {
+Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router) {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');

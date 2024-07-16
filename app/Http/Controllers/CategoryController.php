@@ -12,7 +12,7 @@ class CategoryController extends Controller
 
     public function __construct()
     {
-        \Config::set('auth.defaults.guard', 'userbasic');
+        \Config::set('auth.defaults.guard', 'admin');
     }
 
 
