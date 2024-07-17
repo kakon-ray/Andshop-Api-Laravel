@@ -66,6 +66,7 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
 
 
     Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
+    Route::post('/user/update', [ClientDashboard::class, 'user_update']);
 });
 
 

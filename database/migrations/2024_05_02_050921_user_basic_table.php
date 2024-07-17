@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('last_login')->nullable();
             $table->string('date_of_birth')->nullable();
             $table->integer('status')->nullable();
-            $table->integer('gender')->nullable();
+            $table->string('gender')->nullable();
             $table->text('address')->nullable();
             $table->timestamps();
         });
