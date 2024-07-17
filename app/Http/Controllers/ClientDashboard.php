@@ -116,9 +116,11 @@ class ClientDashboard extends Controller
             $userInfo->email = $request->email;
             $userInfo->gender = $request->gender;
             $userInfo->address = $request->address;
+            $userInfo->date_of_birth = $request->date_of_birth;
             $userInfo->image = $image;
             $userInfo->save();
             DB::commit();
+            
         } catch (\Exception $err) {
             $userInfo = null;
         }
