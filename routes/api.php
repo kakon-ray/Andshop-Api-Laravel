@@ -63,6 +63,9 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
     Route::get('/product/show', [ProductController::class, 'product_show']);
     Route::post('/product/edit', [ProductController::class, 'product_edit']);
     Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
+
+
+    Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
 });
 
 

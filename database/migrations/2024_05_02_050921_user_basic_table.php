@@ -25,9 +25,10 @@ return new class extends Migration
             $table->text('remember_token')->nullable();
             $table->string('image')->nullable();
             $table->string('last_login')->nullable();
-            $table->string('date')->nullable();
-            $table->string('time')->nullable();
+            $table->string('date_of_birth')->nullable();
             $table->integer('status')->nullable();
+            $table->integer('gender')->nullable();
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }

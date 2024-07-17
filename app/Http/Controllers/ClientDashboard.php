@@ -60,5 +60,20 @@ class ClientDashboard extends Controller
         }
     }
 
+    public function user_show(Request $request){
+        $user = UserBasic::where('id',$request->id)->first();
+        if($user){
+            return response()->json([
+                'success' => true,
+                'user' => $user,
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'user' => 'Do not find any user',
+            ]);
+        }
+    }
+
 
 }
