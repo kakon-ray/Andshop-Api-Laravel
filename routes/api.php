@@ -58,15 +58,18 @@ Route::post('/user/user_login', [ClientDashboard::class, 'login'])->name('user.u
 
 
 Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($router) {
-   
+    
+    // user management
+    Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
+    Route::post('/user/update', [ClientDashboard::class, 'user_update']);
+    Route::post('/user/role/request/submit', [ClientDashboard::class, 'user_request_personal_info_submit']);
+
+
     Route::post('/product/add', [ProductController::class, 'product_add']);
     Route::get('/product/show', [ProductController::class, 'product_show']);
     Route::post('/product/edit', [ProductController::class, 'product_edit']);
     Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
 
-
-    Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
-    Route::post('/user/update', [ClientDashboard::class, 'user_update']);
 });
 
 

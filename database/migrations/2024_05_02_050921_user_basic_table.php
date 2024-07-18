@@ -24,9 +24,12 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->text('remember_token')->nullable();
             $table->string('image')->nullable();
+            $table->text('id_card_front')->nullable();
+            $table->text('id_card_back')->nullable();
             $table->string('last_login')->nullable();
             $table->string('date_of_birth')->nullable();
             $table->integer('status')->nullable();
+            $table->integer('role')->nullable();
             $table->string('gender')->nullable();
             $table->text('address')->nullable();
             $table->timestamps();

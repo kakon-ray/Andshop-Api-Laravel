@@ -44,7 +44,7 @@ class ClientDashboard extends Controller
 
                 $userData = [
                     'success' => true,
-                    'message' => 'Login Success',
+                    'msg' => 'Login Success',
                     'token' => $token,
                     'id' => $UserBasic->id,
                     'name' => $UserBasic->name,
@@ -81,6 +81,43 @@ class ClientDashboard extends Controller
 
     public function user_update(Request $request)
     {
+        $arrayRequest = [
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'gender' => $request->gender,
+            'address' => $request->email,
+            'date_of_birth' => $request->email,
+            'image' => $request->image,
+        ];
+
+        $arrayValidate  = [
+            'name' => 'required|string|max:255',
+            'phone' => [
+                'required',
+                'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
+            ],
+            'email' => 'required|string|email|max:255|unique:users',
+            'gender' => 'required',
+            'address' => 'required|string|max:500',
+            'date_of_birth' => 'required',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ];
+
+        $response = Validator::make($arrayRequest, $arrayValidate);
+
+        if ($response->fails()) {
+            $msg = '';
+            foreach ($response->getMessageBag()->toArray() as $item) {
+                $msg = $item;
+            };
+
+            return response()->json([
+                'success' => false,
+                'msg' => $msg[0]
+            ]);
+        }
+
 
         $userInfo = UserBasic::find($request->id);
 
@@ -107,7 +144,7 @@ class ClientDashboard extends Controller
                 $host = $_SERVER['HTTP_HOST'];
                 $image = "http://" . $host . "/uploads/" . $filename;
                 $image = $image;
-            }else{
+            } else {
                 $image = $userInfo->image;
             }
 
@@ -120,7 +157,6 @@ class ClientDashboard extends Controller
             $userInfo->image = $image;
             $userInfo->save();
             DB::commit();
-            
         } catch (\Exception $err) {
             $userInfo = null;
         }
@@ -129,6 +165,115 @@ class ClientDashboard extends Controller
             return response()->json([
                 'success' => true,
                 'msg' => 'User Updated',
+                'user' => $userInfo
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Internal Server Error'
+            ]);
+        }
+    }
+
+    public function user_request_personal_info_submit(Request $request)
+    {
+
+        $arrayRequest = [
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'id_card_front' => $request->id_card_front,
+            'id_card_back' => $request->id_card_back,
+            'role' => $request->role,
+
+        ];
+
+        $arrayValidate  = [
+            'name' => 'required|string|max:255',
+            'phone' => [
+                'required',
+                'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
+            ],
+            'email' => 'required|string|email|max:255|unique:users',
+            'id_card_front.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'id_card_back.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'role' => 'required',
+        ];
+
+        $response = Validator::make($arrayRequest, $arrayValidate);
+
+        if ($response->fails()) {
+            $msg = '';
+            foreach ($response->getMessageBag()->toArray() as $item) {
+                $msg = $item;
+            };
+
+            return response()->json([
+                'success' => false,
+                'msg' => $msg[0]
+            ]);
+        }
+
+
+        $userInfo = UserBasic::find($request->id);
+
+        if (!$userInfo) {
+            return response()->json([
+                'success' => false,
+                'user' => 'Do not find any user',
+            ]);
+        }
+
+        try {
+
+            DB::beginTransaction();
+
+            $slug = Str::slug($request->name . '-' . hexdec(uniqid()));
+
+            if ($request->id_card_front) {
+                $file = $request->file('id_card_front');
+                $filename = $slug . '.' . $file->getClientOriginalExtension();
+
+                $img = Image::make($file);
+                $img->resize(320, 240)->save(public_path('uploads/' . $filename));
+
+                $host = $_SERVER['HTTP_HOST'];
+                $id_card_front = "http://" . $host . "/uploads/" . $filename;
+                $id_card_front = $id_card_front;
+            } else {
+                $id_card_front = $userInfo->id_card_front;
+            }
+
+            if ($request->id_card_back) {
+                $file = $request->file('id_card_back');
+                $filename = $slug . '.' . $file->getClientOriginalExtension();
+
+                $img = Image::make($file);
+                $img->resize(320, 240)->save(public_path('uploads/' . $filename));
+
+                $host = $_SERVER['HTTP_HOST'];
+                $id_card_back = "http://" . $host . "/uploads/" . $filename;
+                $id_card_back = $id_card_back;
+            } else {
+                $id_card_back = $userInfo->id_card_back;
+            }
+
+            $userInfo->name = $request->name;
+            $userInfo->phone = $request->phone;
+            $userInfo->email = $request->email;
+            $userInfo->id_card_front = $id_card_front;
+            $userInfo->id_card_back = $id_card_back;
+            $userInfo->role = $request->role;
+            $userInfo->save();
+            DB::commit();
+        } catch (\Exception $err) {
+            $userInfo = null;
+        }
+
+        if ($userInfo != null) {
+            return response()->json([
+                'success' => true,
+                'msg' => 'Thanks for your request I will contact you',
                 'user' => $userInfo
             ]);
         } else {
