@@ -13,6 +13,7 @@ class Product extends Model
         'category_id',
         'subcategory_id',
         'name',
+        'status',
         'code',
         'unit',
         'tags',
@@ -24,6 +25,6 @@ class Product extends Model
         'description',
         'thumbnail',
         'images',
-        'admin_id',
+        'vendor_id',
     ];
 }

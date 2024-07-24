@@ -23,6 +23,7 @@ class ProductController extends Controller
   public function product_add(Request $request)
   {
 
+
     $arrayRequest = [
       'category' => $request->category,
       'subcategory' => $request->subcategory,
@@ -36,7 +37,7 @@ class ProductController extends Controller
       'description' => $request->description,
       'thumbnail' => $request->thumbnail,
       'images' => $request->images,
-      'admin_id' => $request->admin_id,
+      'vendor_id' => $request->vendor_id,
     ];
 
     $arrayValidate  = [
@@ -44,14 +45,14 @@ class ProductController extends Controller
       'subcategory' => 'required',
       'name' => 'required|string|max:255',
       'code' => 'required',
-      'purchase_price' => 'required|numeric|between:0,9999.99',
-      'selling_price' => 'required|numeric|between:0,9999.99',
+      'purchase_price' => 'required|numeric|between:0,99999.99',
+      'selling_price' => 'required|numeric|between:0,99999.99',
       'discount_price' => 'required|numeric|between:0,9999.99',
       'stock_quantity' => 'required|integer|min:0',
       'description' => 'required|string|max:1000',
       'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
       'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-      'admin_id' => 'required',
+      'vendor_id' => 'required',
     ];
 
     $response = Validator::make($arrayRequest, $arrayValidate);
@@ -111,6 +112,7 @@ class ProductController extends Controller
         'category_id' => $request->category,
         'subcategory_id' => $request->subcategory,
         'name' => $request->name,
+        'status' => 'Inprogress',
         'code' => $request->code,
         'tags' => $request->tags,
         'purchase_price' => $request->purchase_price,
@@ -120,7 +122,7 @@ class ProductController extends Controller
         'description' => $request->description,
         'thumbnail' => $thumbnail,
         'images' => json_encode($images),
-        'admin_id' => $request->admin_id,
+        'vendor_id' => $request->vendor_id,
 
       ]);
 
@@ -144,14 +146,14 @@ class ProductController extends Controller
   }
 
 
-  public function product_show(Request $request)
+  public function specific_product_show(Request $request)
   {
-    $product = Product::all();
+    $product = Product::where('vendor_id',$request->vendor_id)->get();
 
     if ($product->count() != 0) {
       return response()->json([
         'success' => true,
-        'product' => $product,
+        'myproduct' => $product,
       ]);
     } else {
       return response()->json([
@@ -165,7 +167,6 @@ class ProductController extends Controller
   {
     
    
-
     $arrayRequest = [
       'category' => $request->category,
       'subcategory' => $request->subcategory,
@@ -179,7 +180,7 @@ class ProductController extends Controller
       'description' => $request->description,
       'thumbnail' => $request->thumbnail,
       'images' => $request->images,
-      'admin_id' => $request->admin_id,
+      'vendor_id' => $request->vendor_id,
     ];
 
     $arrayValidate  = [
@@ -187,8 +188,8 @@ class ProductController extends Controller
       'subcategory' => 'required',
       'name' => 'required|string|max:255',
       'code' => 'required',
-      'purchase_price' => 'required|numeric|between:0,9999.99',
-      'selling_price' => 'required|numeric|between:0,9999.99',
+      'purchase_price' => 'required|numeric|between:0,99999.99',
+      'selling_price' => 'required|numeric|between:0,99999.99',
       'discount_price' => 'required|numeric|between:0,9999.99',
       'stock_quantity' => 'required|integer|min:0',
       'description' => 'required|string|max:1000',
@@ -196,7 +197,7 @@ class ProductController extends Controller
       'thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
       'images' => 'sometimes',
       'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-      'admin_id' => 'required',
+      'vendor_id' => 'required',
     ];
 
     $response = Validator::make($arrayRequest, $arrayValidate);
@@ -271,7 +272,7 @@ class ProductController extends Controller
       $product->description =  $request->description;
       $product->thumbnail =  $thumbnail;
       $product->images =  json_encode($images);
-      $product->admin_id =  $request->admin_id;
+      $product->vendor_id =  $request->vendor_id;
       $product->save();
 
       DB::commit();
@@ -323,4 +324,7 @@ class ProductController extends Controller
       }
     }
   }
+
+
+
 }

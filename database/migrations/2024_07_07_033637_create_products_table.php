@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('subcategory_id');
             $table->string('name')->nullable();
+            $table->string('status')->nullable();
             $table->string('code')->nullable();
             $table->string('unit')->nullable();
             $table->string('tags')->nullable();
@@ -29,7 +30,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('images')->nullable();
-            $table->integer('admin_id')->nullable();
+            $table->integer('vendor_id')->nullable();
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');

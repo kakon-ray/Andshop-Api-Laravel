@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\VendorManagement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,20 @@ Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router
     Route::get('/subcategory/delete/{id}', [SubcategoryController::class, 'sub_category_delete']);
 
 
+    // only api created
+    Route::post('/role/request/accepted', [VendorManagement::class, 'user_request_personal_info_accepted']);
+    
+    // only api created
+    Route::post('/role/request/cancel', [VendorManagement::class, 'user_request_personal_info_cancel']);
+
+    // only api created
+    Route::get('/product/manage', [VendorManagement::class, 'product_manage']);
+
+    // only api created
+    Route::post('/product/approved', [VendorManagement::class, 'product_approved']);
+
+    // only api created
+    Route::post('/product/cancel', [VendorManagement::class, 'product_cancel']);
 });
 
 
@@ -58,18 +73,21 @@ Route::post('/user/user_login', [ClientDashboard::class, 'login'])->name('user.u
 
 
 Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($router) {
-    
+
     // user management
     Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
     Route::post('/user/update', [ClientDashboard::class, 'user_update']);
     Route::post('/user/role/request/submit', [ClientDashboard::class, 'user_request_personal_info_submit']);
 
 
+    // only api created
     Route::post('/product/add', [ProductController::class, 'product_add']);
-    Route::get('/product/show', [ProductController::class, 'product_show']);
+    // only api created
+    Route::get('/specific/product/show/{vendor_id}', [ProductController::class, 'specific_product_show']);
+    // only api created
     Route::post('/product/edit', [ProductController::class, 'product_edit']);
+    // only api created
     Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
-
 });
 
 
