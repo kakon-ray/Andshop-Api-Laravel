@@ -27,6 +27,9 @@ Route::post('/user_login', [AdminAuthController::class, 'login'])->name('user_lo
 // verification email
 Route::post('/email-verified', [RegController::class, 'email_verified'])->name('email_verified');
 
+// dropzone image upload api
+Route::post('/upload-images', [ProductController::class, 'store_image']);
+
 
 Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router) {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
@@ -80,6 +83,7 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
     Route::post('/user/role/request/submit', [ClientDashboard::class, 'user_request_personal_info_submit']);
 
 
+    
     // only api created
     Route::post('/product/add', [ProductController::class, 'product_add']);
     // only api created

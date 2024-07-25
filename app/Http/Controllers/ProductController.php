@@ -148,7 +148,7 @@ class ProductController extends Controller
 
   public function specific_product_show(Request $request)
   {
-    $product = Product::where('vendor_id',$request->vendor_id)->get();
+    $product = Product::where('vendor_id', $request->vendor_id)->get();
 
     if ($product->count() != 0) {
       return response()->json([
@@ -165,8 +165,8 @@ class ProductController extends Controller
 
   public function product_edit(Request $request)
   {
-    
-   
+
+
     $arrayRequest = [
       'category' => $request->category,
       'subcategory' => $request->subcategory,
@@ -237,7 +237,7 @@ class ProductController extends Controller
 
         //http://127.0.0.1:8000/uploads/kakon-ray.jpg
 
-      }else{
+      } else {
         $thumbnail = $request->old_thumbnail;
       }
 
@@ -255,7 +255,7 @@ class ProductController extends Controller
 
           array_push($images, $imageLink);
         }
-      }else{
+      } else {
         $images = $request->old_images;
       }
 
@@ -325,6 +325,24 @@ class ProductController extends Controller
     }
   }
 
+  // dropzone image upload
+  public function store_image(Request $request)
+  {
+    $name = [];
+    $original_name = [];
+    foreach ($request->file('file') as $key => $value) {
 
+        $filename = uniqid() . time() . '.' . $value->getClientOriginalExtension();
+        $img = Image::make($value);
+        $img->resize(500, 500)->save(public_path('/images/product/' . $filename));
 
+        $name[] = $filename;
+        $original_name[] = $value->getClientOriginalName();
+    }
+
+    return response()->json([
+        'name'          => $name,
+        'original_name' => $original_name
+    ]);
+  }
 }
