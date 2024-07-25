@@ -35,9 +35,6 @@ class ProductController extends Controller
       'discount_price' => $request->discount_price,
       'stock_quantity' => $request->stock_quantity,
       'description' => $request->description,
-      'thumbnail' => $request->thumbnail,
-      'images' => $request->images,
-      'vendor_id' => $request->vendor_id,
     ];
 
     $arrayValidate  = [
@@ -50,9 +47,6 @@ class ProductController extends Controller
       'discount_price' => 'required|numeric|between:0,9999.99',
       'stock_quantity' => 'required|integer|min:0',
       'description' => 'required|string|max:1000',
-      'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-      'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-      'vendor_id' => 'required',
     ];
 
     $response = Validator::make($arrayRequest, $arrayValidate);
@@ -75,38 +69,15 @@ class ProductController extends Controller
       DB::beginTransaction();
 
       // single thumbnil image upload
-      $slug = Str::slug($request->name . '-' . hexdec(uniqid()));
+      $host = $_SERVER['HTTP_HOST'];
+      $baseUrl = "http://" . $host . "/images/product/";
 
-      if ($request->thumbnail) {
-        $file = $request->file('thumbnail');
-        $filename = $slug . '.' . $file->getClientOriginalExtension();
+      $thumbnail = $baseUrl . $request->thumbnail;
 
-        $img = Image::make($file);
-        $img->resize(320, 240)->save(public_path('uploads/' . $filename));
+      $imagesWithUrls = array_map(function ($image) use ($baseUrl) {
+        return $baseUrl . $image;
+      }, $request->images);
 
-        $host = $_SERVER['HTTP_HOST'];
-        $image = "http://" . $host . "/uploads/" . $filename;
-        $thumbnail = $image;
-
-        //http://127.0.0.1:8000/uploads/kakon-ray.jpg
-
-      }
-
-      //multiple images uploads
-      $images = array();
-      if ($request->images) {
-        foreach ($request->file('images') as $key => $image2) {
-          $imageName = hexdec(uniqid()) . '.' . $image2->getClientOriginalExtension();
-
-          $img = Image::make($image2);
-          $img->resize(320, 240)->save(public_path('uploads/' . $imageName));
-
-          $host = $_SERVER['HTTP_HOST'];
-          $imageLink = "http://" . $host . "/uploads/" . $imageName;
-
-          array_push($images, $imageLink);
-        }
-      }
 
       $product = Product::create([
         'category_id' => $request->category,
@@ -121,7 +92,7 @@ class ProductController extends Controller
         'stock_quantity' => $request->stock_quantity,
         'description' => $request->description,
         'thumbnail' => $thumbnail,
-        'images' => json_encode($images),
+        'images' => json_encode($imagesWithUrls),
         'vendor_id' => $request->vendor_id,
 
       ]);
@@ -134,7 +105,8 @@ class ProductController extends Controller
     if ($product != null) {
       return response()->json([
         'success' => true,
-        'msg' => 'Product Submited'
+        'msg' => 'Product Submited',
+        'product' => $product
       ]);
     } else {
       return response()->json([
@@ -153,7 +125,7 @@ class ProductController extends Controller
     if ($product->count() != 0) {
       return response()->json([
         'success' => true,
-        'myproduct' => $product,
+        'products' => $product,
       ]);
     } else {
       return response()->json([
@@ -332,17 +304,18 @@ class ProductController extends Controller
     $original_name = [];
     foreach ($request->file('file') as $key => $value) {
 
-        $filename = uniqid() . time() . '.' . $value->getClientOriginalExtension();
-        $img = Image::make($value);
-        $img->resize(500, 500)->save(public_path('/images/product/' . $filename));
+      $filename = uniqid() . time() . '.' . $value->getClientOriginalExtension();
+      $img = Image::make($value);
+      $img->resize(500, 500)->save(public_path('/images/product/' . $filename));
 
-        $name[] = $filename;
-        $original_name[] = $value->getClientOriginalName();
+      $name[] = $filename;
+      $original_name[] = $value->getClientOriginalName();
     }
 
     return response()->json([
-        'name'          => $name,
-        'original_name' => $original_name
+      'name'          => $name,
+      'original_name' => $original_name
     ]);
   }
+  
 }
