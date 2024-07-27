@@ -146,8 +146,8 @@ class ProductController extends Controller
 
 
     $arrayRequest = [
-      'category' => $request->category,
-      'subcategory' => $request->subcategory,
+      'category_id' => $request->category_id,
+      'subcategory_id' => $request->subcategory_id,
       'name' => $request->name,
       'code' => $request->code,
       'tags' => $request->tags,
@@ -156,14 +156,11 @@ class ProductController extends Controller
       'discount_price' => $request->discount_price,
       'stock_quantity' => $request->stock_quantity,
       'description' => $request->description,
-      'thumbnail' => $request->thumbnail,
-      'images' => $request->images,
-      'vendor_id' => $request->vendor_id,
     ];
 
     $arrayValidate  = [
-      'category' => 'required',
-      'subcategory' => 'required',
+      'category_id' => 'required',
+      'subcategory_id' => 'required',
       'name' => 'required|string|max:255',
       'code' => 'required',
       'purchase_price' => 'required|numeric|between:0,99999.99',
@@ -171,11 +168,6 @@ class ProductController extends Controller
       'discount_price' => 'required|numeric|between:0,9999.99',
       'stock_quantity' => 'required|integer|min:0',
       'description' => 'required|string|max:1000',
-      'thumbnail' => 'sometimes',
-      'thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-      'images' => 'sometimes',
-      'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-      'vendor_id' => 'required',
     ];
 
     $response = Validator::make($arrayRequest, $arrayValidate);
@@ -193,65 +185,38 @@ class ProductController extends Controller
     }
 
 
-    $product = Product::find($request->id);
-
     try {
 
       DB::beginTransaction();
 
       // single thumbnil image upload
-      $slug = Str::slug($request->name . '-' . hexdec(uniqid()));
+      $host = $_SERVER['HTTP_HOST'];
+      $baseUrl = "http://" . $host . "/images/product/";
 
-      if ($request->thumbnail) {
-        $file = $request->file('thumbnail');
-        $filename = $slug . '.' . $file->getClientOriginalExtension();
+      $thumbnail = $baseUrl . $request->thumbnail;
 
-        $img = Image::make($file);
-        $img->resize(320, 240)->save(public_path('uploads/' . $filename));
-
-        $host = $_SERVER['HTTP_HOST'];
-        $image = "http://" . $host . "/uploads/" . $filename;
-        $thumbnail = $image;
-
-        //http://127.0.0.1:8000/uploads/kakon-ray.jpg
-
-      } else {
-        $thumbnail = $request->old_thumbnail;
-      }
-
-      //multiple images uploads
-      $images = array();
-      if ($request->images) {
-        foreach ($request->file('images') as $key => $image2) {
-          $imageName = hexdec(uniqid()) . '.' . $image2->getClientOriginalExtension();
-
-          $img = Image::make($image2);
-          $img->resize(320, 240)->save(public_path('uploads/' . $imageName));
-
-          $host = $_SERVER['HTTP_HOST'];
-          $imageLink = "http://" . $host . "/uploads/" . $imageName;
-
-          array_push($images, $imageLink);
-        }
-      } else {
-        $images = $request->old_images;
-      }
+      $imagesWithUrls = array_map(function ($image) use ($baseUrl) {
+        return $baseUrl . $image;
+      }, $request->images);
 
 
-      $product->category_id =  $request->category;
-      $product->subcategory_id =  $request->subcategory;
-      $product->name =  $request->name;
-      $product->code =  $request->code;
-      $product->tags =  $request->tags;
-      $product->purchase_price =  $request->purchase_price;
-      $product->selling_price =  $request->selling_price;
-      $product->discount_price =  $request->discount_price;
-      $product->stock_quantity =  $request->stock_quantity;
-      $product->description =  $request->description;
-      $product->thumbnail =  $thumbnail;
-      $product->images =  json_encode($images);
-      $product->vendor_id =  $request->vendor_id;
-      $product->save();
+      $product = Product::where('id',$request->id)->update([
+        'category_id' => $request->category_id,
+        'subcategory_id' => $request->subcategory_id,
+        'name' => $request->name,
+        'status' => 'Inprogress',
+        'code' => $request->code,
+        'tags' => $request->tags,
+        'purchase_price' => $request->purchase_price,
+        'selling_price' => $request->selling_price,
+        'discount_price' => $request->discount_price,
+        'stock_quantity' => $request->stock_quantity,
+        'description' => $request->description,
+        'thumbnail' => $thumbnail,
+        'images' => json_encode($imagesWithUrls),
+        'vendor_id' => $request->vendor_id,
+
+      ]);
 
       DB::commit();
     } catch (\Exception $err) {
@@ -259,14 +224,20 @@ class ProductController extends Controller
     }
 
     if ($product != null) {
+      
+      $updateProduct = Product::where('id',$request->id)->first();
+      $updateProduct->images = json_decode($updateProduct->images);
+
       return response()->json([
         'success' => true,
-        'msg' => 'Product Updated'
+        'msg' => 'Product Updated',
+        'product' => $updateProduct
       ]);
     } else {
       return response()->json([
         'success' => false,
-        'msg' => 'Internal Server Error'
+        'msg' => 'Internal Server Error',
+        'err_msg' => $err->getMessage()
       ]);
     }
   }
@@ -292,7 +263,8 @@ class ProductController extends Controller
       if ($product != null) {
         return response()->json([
           'success' => true,
-          'msg' => 'Delete this product'
+          'msg' => 'Delete this product',
+          'id' => $product->id
         ]);
       } else {
         return response()->json([
