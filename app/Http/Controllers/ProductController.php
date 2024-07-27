@@ -123,6 +123,10 @@ class ProductController extends Controller
   public function specific_product_show(Request $request)
   {
     $product = Product::where('vendor_id', $request->vendor_id)->get();
+    
+    foreach ($product as $item) {
+      $item->images = json_decode($item->images);
+    }
 
     if ($product->count() != 0) {
       return response()->json([
