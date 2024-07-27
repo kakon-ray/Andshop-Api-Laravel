@@ -86,13 +86,14 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
     
    
     Route::post('/product/create', [ProductController::class, 'product_add']);
-  
     Route::get('/specific/product/show/{vendor_id}', [ProductController::class, 'specific_product_show']);
-    
     // only api created
     Route::post('/product/edit', [ProductController::class, 'product_edit']);
     // only api created
     Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
+
+    Route::get('/category/show', [ProductController::class, 'category_show']);
+    Route::get('/subcategory/show', [ProductController::class, 'sub_category_show']);
 });
 
 

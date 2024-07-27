@@ -86,7 +86,7 @@ class SubcategoryController extends Controller
         if ($all_subcategory->count() != 0) {
             return response()->json([
                 'success' => true,
-                'subcategory' => $all_subcategory,
+                'subcategories' => $all_subcategory,
             ]);
         } else {
             return response()->json([

@@ -83,7 +83,7 @@ class CategoryController extends Controller
         if ($all_category->count() != 0) {
             return response()->json([
                 'success' => true,
-                'category' => $all_category,
+                'categories' => $all_category,
             ]);
         } else {
             return response()->json([

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -316,6 +318,38 @@ class ProductController extends Controller
       'name'          => $name,
       'original_name' => $original_name
     ]);
+  }
+
+  public function category_show(Request $request)
+  {
+      $all_category = Category::all();
+
+      if ($all_category->count() != 0) {
+          return response()->json([
+              'success' => true,
+              'categories' => $all_category,
+          ]);
+      } else {
+          return response()->json([
+              'msg' => 'No Product',
+          ]);
+      }
+  }
+
+  public function sub_category_show(Request $request)
+  {
+      $all_subcategory = Subcategory::all();
+
+      if ($all_subcategory->count() != 0) {
+          return response()->json([
+              'success' => true,
+              'subcategories' => $all_subcategory,
+          ]);
+      } else {
+          return response()->json([
+              'msg' => 'No Subcategory found',
+          ]);
+      }
   }
   
 }
