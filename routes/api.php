@@ -9,9 +9,16 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\UserGuestController;
 use App\Http\Controllers\VendorManagement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// ================ user guest  ========================== 
+
+Route::get('/get-all-product', [UserGuestController::class, 'get_all_product']);
+
+
 
 
 Route::post('/reset_password', [PasswordResetRequestController::class, 'reset_password_submit'])->name('reset_password');
@@ -31,6 +38,7 @@ Route::post('/email-verified', [RegController::class, 'email_verified'])->name('
 Route::post('/upload-images', [ProductController::class, 'store_image']);
 
 
+// ================ superadmin authentication ========================== 
 Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router) {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
