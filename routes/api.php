@@ -23,6 +23,7 @@ Route::get('/get-all-product', [UserGuestController::class, 'get_all_product']);
 Route::post('/add/cartlist', [CartListController::class, 'store']);
 Route::get('/show/cartlist/{user_id}', [CartListController::class, 'show_cartlist']);
 Route::get('/delete/cartlist/{id}', [CartListController::class, 'destroy']);
+Route::post('/edit/cartlist', [CartListController::class, 'update_cartquantity']);
 
 
 
