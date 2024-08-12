@@ -12,7 +12,7 @@ class CartListController extends Controller
 
     public function store(Request $request)
     {
-        $cartlist = CartList::where('product_id', $request->product_id)->count();
+        $cartlist = CartList::where('product_id', $request->product_id)->where('user_id',$request->user_id)->count();
 
         if ($cartlist) {
             return response()->json([

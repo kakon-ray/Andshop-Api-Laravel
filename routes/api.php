@@ -12,6 +12,7 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserGuestController;
 use App\Http\Controllers\VendorManagement;
+use App\Http\Controllers\WishListController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,11 @@ Route::post('/add/cartlist', [CartListController::class, 'store']);
 Route::get('/show/cartlist/{user_id}', [CartListController::class, 'show_cartlist']);
 Route::get('/delete/cartlist/{id}', [CartListController::class, 'destroy']);
 Route::post('/edit/cartlist', [CartListController::class, 'update_cartquantity']);
+
+// wishlist manage
+Route::post('/add/wishlist', [WishListController::class, 'store']);
+Route::get('/show/wishlist/{user_id}', [WishListController::class, 'show_cartlist']);
+Route::get('/delete/wishlist/{id}', [WishListController::class, 'destroy']);
 
 
 
@@ -52,16 +58,16 @@ Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router
     Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 
 
-    Route::post('/category/add', [CategoryController::class, 'category_store']);
-    Route::get('/category/show', [CategoryController::class, 'category_show']);
-    Route::post('/category/edit', [CategoryController::class, 'category_edit']);
-    Route::get('/category/delete/{id}', [CategoryController::class, 'category_delete']);
+    Route::post('/admin/category/add', [CategoryController::class, 'category_store']);
+    Route::get('/admin/category/show', [CategoryController::class, 'category_show']);
+    Route::post('/admin/category/edit', [CategoryController::class, 'category_edit']);
+    Route::get('/admin/category/delete/{id}', [CategoryController::class, 'category_delete']);
 
 
-    Route::post('/subcategory/add', [SubcategoryController::class, 'sub_category_store']);
-    Route::get('/subcategory/show', [SubcategoryController::class, 'sub_category_show']);
-    Route::post('/subcategory/edit', [SubcategoryController::class, 'sub_category_edit']);
-    Route::get('/subcategory/delete/{id}', [SubcategoryController::class, 'sub_category_delete']);
+    Route::post('/admin/subcategory/add', [SubcategoryController::class, 'sub_category_store']);
+    Route::get('/admin/subcategory/show', [SubcategoryController::class, 'sub_category_show']);
+    Route::post('/admin/subcategory/edit', [SubcategoryController::class, 'sub_category_edit']);
+    Route::get('/admin/subcategory/delete/{id}', [SubcategoryController::class, 'sub_category_delete']);
 
 
     // only api created

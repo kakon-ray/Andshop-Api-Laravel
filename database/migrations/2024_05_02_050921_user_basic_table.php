@@ -28,8 +28,8 @@ return new class extends Migration
             $table->text('id_card_back')->nullable();
             $table->string('last_login')->nullable();
             $table->string('date_of_birth')->nullable();
-            $table->integer('status')->nullable();
-            $table->integer('role')->nullable();
+            $table->string('status')->nullable();
+            $table->string('role')->nullable();
             $table->string('gender')->nullable();
             $table->text('address')->nullable();
             $table->timestamps();

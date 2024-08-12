@@ -268,6 +268,10 @@ class ClientDashboard extends Controller
             DB::commit();
         } catch (\Exception $err) {
             $userInfo = null;
+            return response()->json([
+                'error' => 'Internal Server Error',
+                'err_msg' => $err->getMessage()
+            ]);
         }
 
         if ($userInfo != null) {
@@ -276,12 +280,7 @@ class ClientDashboard extends Controller
                 'msg' => 'Thanks for your request I will contact you',
                 'user' => $userInfo
             ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Internal Server Error'
-            ]);
-        }
+        } 
     }
 
 
