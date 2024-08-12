@@ -71,7 +71,7 @@ class WishListController extends Controller
 
         return response()->json([
             'success' => true,
-            'cartlist' => $wishlist->map(function ($wishlist) {
+            'wishlist' => $wishlist->map(function ($wishlist) {
                 return $wishlist->only([
                     'id',
                     'user_id',
