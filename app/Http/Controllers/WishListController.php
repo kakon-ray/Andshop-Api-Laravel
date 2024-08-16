@@ -98,7 +98,6 @@ class WishListController extends Controller
                 ], 404);
             }
 
-
             $wishlist->delete();
 
             return response()->json([
