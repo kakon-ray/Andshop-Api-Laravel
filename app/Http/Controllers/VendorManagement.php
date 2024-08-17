@@ -100,23 +100,22 @@ class VendorManagement extends Controller
             'user' => 'Product Approved',
         ]);
   }
-  public function product_cancel(Request $request)
+  public function product_delete(Request $request)
   {
        $product = Product::find($request->id);
 
         if (!$product) {
             return response()->json([
                 'success' => false,
-                'user' => 'Do not find any Product',
+                'msg' => 'Do not find any Product',
             ]);
         }
 
-        $product->status = 'Cancel';
-        $product->save();
+        $product->delete();
 
         return response()->json([
             'success' => true,
-            'user' => 'Product Cancel',
+            'msg' => 'Product Deleted',
         ]);
   }
 

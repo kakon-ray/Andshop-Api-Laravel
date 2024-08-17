@@ -82,7 +82,7 @@ Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router
     Route::post('/admin/product/approved', [VendorManagement::class, 'product_approved']);
 
     // only api created
-    Route::post('/product/cancel', [VendorManagement::class, 'product_cancel']);
+    Route::post('/admin/product/delete', [VendorManagement::class, 'product_delete']);
 });
 
 
