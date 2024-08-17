@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('status')->nullable();
             $table->string('code')->nullable();
-            $table->string('unit')->nullable();
+            $table->integer('view_count')->nullable();
+            $table->integer('sell_count')->nullable();
             $table->string('tags')->nullable();
             $table->string('purchase_price')->nullable();
             $table->string('selling_price')->nullable();

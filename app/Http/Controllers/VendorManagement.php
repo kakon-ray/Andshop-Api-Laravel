@@ -72,7 +72,7 @@ class VendorManagement extends Controller
     if ($product->count() != 0) {
       return response()->json([
         'success' => true,
-        'product' => $product,
+        'products' => $product,
       ]);
     } else {
       return response()->json([
@@ -92,7 +92,7 @@ class VendorManagement extends Controller
             ]);
         }
 
-        $product->status = true;
+        $product->status = $request->value;
         $product->save();
 
         return response()->json([
