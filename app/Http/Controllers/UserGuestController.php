@@ -7,30 +7,31 @@ use Illuminate\Http\Request;
 
 class UserGuestController extends Controller
 {
-    public function get_all_product()
+    public function get_all_product(Request $request)
     {
-        // Retrieve the products with specific fields
-        $products = Product::select('id', 'category_id', 'subcategory_id', 'name', 'status', 'code', 'tags', 'selling_price', 'discount_price', 'description', 'thumbnail', 'images')->get();
+        // Retrieve the page number from the request (default is 1)
+        $page = $request->input('page', 1);
+        // Retrieve the number of products per page (default is 6)
+        $perPage = $request->input('per_page', 6);
 
-        $count = $products->count();
+        $products = Product::select('id', 'category_id', 'subcategory_id', 'name', 'status', 'code', 'tags', 'selling_price', 'discount_price', 'description', 'thumbnail', 'images')
+        ->where('status', '!=', '0')    
+        ->paginate($perPage, ['*'], 'page', $page);
 
-        if ($count > 0) {
-
-            foreach ($products as $item) {
-                $item->images = json_decode($item->images);
-            }
-
-            return response()->json([
-                'success' => true,
-                'count' => $count,
-                'products' => $products
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'No products found',
-                'products' => []
-            ]);
+        // Decode the JSON 'images' field for each product
+        foreach ($products as $product) {
+            $product->images = json_decode($product->images);
         }
+
+
+        return response()->json([
+            'success' => true,
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'total_products' => $products->total(),
+            'products' => $products->items(),
+            'next_page_url' => $products->nextPageUrl(),
+            'prev_page_url' => $products->previousPageUrl(),
+        ]);
     }
 }

@@ -34,6 +34,8 @@ Route::get('/delete/wishlist/{id}', [WishListController::class, 'destroy']);
 
 
 
+// ================ superadmin authentication ========================== 
+
 Route::post('/reset_password', [PasswordResetRequestController::class, 'reset_password_submit'])->name('reset_password');
 Route::get('reset/password/{token}', [PasswordResetRequestController::class, 'show_reset_password_form'])->name('reset.password');
 Route::post('/new-password', [PasswordResetRequestController::class, 'new_password_submit'])->name('new.password.submit');
@@ -51,7 +53,6 @@ Route::post('/email-verified', [RegController::class, 'email_verified'])->name('
 Route::post('/upload-images', [ProductController::class, 'store_image']);
 
 
-// ================ superadmin authentication ========================== 
 Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router) {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
