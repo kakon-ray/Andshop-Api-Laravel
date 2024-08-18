@@ -107,7 +107,7 @@ Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($ro
     
    
     Route::post('/product/create', [ProductController::class, 'product_add']);
-    Route::get('/specific/product/show/{vendor_id}', [ProductController::class, 'specific_product_show']);
+    Route::get('/specific/product/show', [ProductController::class, 'specific_product_show']);
 
     Route::post('/product/edit', [ProductController::class, 'product_edit']);
 

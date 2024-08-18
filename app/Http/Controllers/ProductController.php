@@ -122,22 +122,36 @@ class ProductController extends Controller
 
   public function specific_product_show(Request $request)
   {
-    $product = Product::where('vendor_id', $request->vendor_id)->get();
-    
-    foreach ($product as $item) {
-      $item->images = json_decode($item->images);
-    }
+     
+      $page = $request->input('page', 1);
+      $perPage = $request->input('per_page', 6); 
+  
 
-    if ($product->count() != 0) {
-      return response()->json([
-        'success' => true,
-        'products' => $product,
-      ]);
-    } else {
-      return response()->json([
-        'msg' => 'No Product',
-      ]);
-    }
+      $products = Product::where('vendor_id', $request->vendor_id)
+          ->paginate($perPage, ['*'], 'page', $page);
+  
+
+      foreach ($products as $item) {
+          $item->images = json_decode($item->images);
+      }
+  
+ 
+      if ($products->count() != 0) {
+          return response()->json([
+              'success' => true,
+              'current_page' => $products->currentPage(),
+              'last_page' => $products->lastPage(),
+              'total_products' => $products->total(),
+              'products' => $products->items(),
+              'next_page_url' => $products->nextPageUrl(),
+              'prev_page_url' => $products->previousPageUrl(),
+          ]);
+      } else {
+       
+          return response()->json([
+              'msg' => 'No Product',
+          ]);
+      }
   }
 
 
