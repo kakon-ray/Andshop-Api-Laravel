@@ -72,17 +72,16 @@ Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router
 
 
     // only api created
-    Route::post('/role/request/accepted', [VendorManagement::class, 'user_request_personal_info_accepted']);
+    Route::post('/admin/role/request/accepted', [VendorManagement::class, 'user_request_personal_info_accepted']);
     
-    // only api created
-    Route::post('/role/request/cancel', [VendorManagement::class, 'user_request_personal_info_cancel']);
 
 
     Route::get('/admin/product/manage', [VendorManagement::class, 'product_manage']);
 
+    Route::get('/admin/vendor/manage', [VendorManagement::class, 'vendor_manage']);
+
     Route::post('/admin/product/approved', [VendorManagement::class, 'product_approved']);
 
-    // only api created
     Route::post('/admin/product/delete', [VendorManagement::class, 'product_delete']);
 });
 

@@ -29,61 +29,65 @@ class VendorManagement extends Controller
         $check_Vendor_request = UserBasic::where('id', $request->id)->where('role', 'vendor')->count();
 
         if ($check_Vendor_request) {
-            $userInfo->status = true;
-            $userInfo->save();
+            $userInfo->status = $request->value;
 
-            return response()->json([
-                'success' => true,
-                'user' => 'Vendor Requested Accepted',
-            ]);
+
+            if ($request->value) {
+
+                $userInfo->role = "Vendor";
+                $userInfo->save();
+
+                return response()->json([
+                    'success' => true,
+                    'msg' => 'Vendor Requested Accepted',
+                ]);
+            } else {
+
+                $userInfo->role = "User";
+                $userInfo->save();
+
+                return response()->json([
+                    'success' => true,
+                    'msg' => 'Vendor Requested Cancel',
+                ]);
+            }
         }
     }
 
-    public function user_request_personal_info_cancel(Request $request)
+    public function vendor_manage(Request $request)
     {
-        $userInfo = UserBasic::find($request->id);
-
-        if (!$userInfo) {
+        $users = UserBasic::all();
+        if ($users) {
             return response()->json([
                 'success' => false,
-                'user' => 'Do not find any user',
+                'users' => $users,
             ]);
         }
+    }
 
-        $check_Vendor_request = UserBasic::where('id', $request->id)->where('role', 'vendor')->count();
 
-        if ($check_Vendor_request) {
-            $userInfo->status = false;
-            $userInfo->save();
 
+    // vendor product management
+
+    public function product_manage(Request $request)
+    {
+        $product = Product::all();
+
+        if ($product->count() != 0) {
             return response()->json([
                 'success' => true,
-                'user' => 'Vendor Requested Cancel',
+                'products' => $product,
+            ]);
+        } else {
+            return response()->json([
+                'msg' => 'No Product',
             ]);
         }
     }
 
-      // vendor product management
-  
-  public function product_manage(Request $request)
-  {
-    $product = Product::all();
-
-    if ($product->count() != 0) {
-      return response()->json([
-        'success' => true,
-        'products' => $product,
-      ]);
-    } else {
-      return response()->json([
-        'msg' => 'No Product',
-      ]);
-    }
-  }
-
-  public function product_approved(Request $request)
-  {
-       $product = Product::find($request->id);
+    public function product_approved(Request $request)
+    {
+        $product = Product::find($request->id);
 
         if (!$product) {
             return response()->json([
@@ -99,10 +103,10 @@ class VendorManagement extends Controller
             'success' => true,
             'user' => 'Product Approved',
         ]);
-  }
-  public function product_delete(Request $request)
-  {
-       $product = Product::find($request->id);
+    }
+    public function product_delete(Request $request)
+    {
+        $product = Product::find($request->id);
 
         if (!$product) {
             return response()->json([
@@ -117,6 +121,5 @@ class VendorManagement extends Controller
             'success' => true,
             'msg' => 'Product Deleted',
         ]);
-  }
-
+    }
 }
