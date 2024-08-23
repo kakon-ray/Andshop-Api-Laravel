@@ -16,6 +16,8 @@ class CartList extends Model
         'price',
         'quantity',
         'image',
+        'color',
+        'size'
     ];
 
 

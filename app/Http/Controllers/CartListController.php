@@ -28,7 +28,9 @@ class CartListController extends Controller
                     'name' => $request->name,
                     'price' => $request->price,
                     'quantity' => $request->quantity,
-                    'image' => $request->image
+                    'image' => $request->image,
+                    'color' => $request->color,
+                    'size' => $request->size
                 ]);
 
 
@@ -43,7 +45,9 @@ class CartListController extends Controller
                             'name',
                             'price',
                             'quantity',
-                            'image'
+                            'image',
+                            'color',
+                            'size'
                         ])
                     ]);
                 }
@@ -108,7 +112,9 @@ class CartListController extends Controller
                     'name',
                     'price',
                     'quantity',
-                    'image'
+                    'image',
+                    'color',
+                    'size'
                 ])
             ]);
         } catch (\Exception $err) {
@@ -143,7 +149,9 @@ class CartListController extends Controller
                     'name',
                     'price',
                     'quantity',
-                    'image'
+                    'image',
+                    'color',
+                    'size',
                 ]);
             })
         ]);

@@ -80,12 +80,9 @@ class WishListController extends Controller
                     'price',
                     'quantity',
                     'image'
-                ]);
-            })
-        ]);
-    }
 
-    public function destroy(Request $request)
+                    'image'
+uest $request)
     {
         try {
 

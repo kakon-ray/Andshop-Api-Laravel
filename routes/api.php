@@ -16,9 +16,14 @@ use App\Http\Controllers\WishListController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// ================ user guest  ========================== 
+
+
+
+
+// ================ user or vendor authentication ========================== 
 
 Route::get('/get-all-product', [UserGuestController::class, 'get_all_product']);
+Route::get('/product-details/{id}', [UserGuestController::class, 'product_details']);
 
 // cartlist manage
 Route::post('/add/cartlist', [CartListController::class, 'store']);
@@ -30,6 +35,39 @@ Route::post('/edit/cartlist', [CartListController::class, 'update_cartquantity']
 Route::post('/add/wishlist', [WishListController::class, 'store']);
 Route::get('/show/wishlist/{user_id}', [WishListController::class, 'show_cartlist']);
 Route::get('/delete/wishlist/{id}', [WishListController::class, 'destroy']);
+
+
+
+
+
+// user or vendor login and registration and check
+Route::post('/user/sign_up', [RegController::class, 'regisign_upster'])->name('user.sign_up');
+Route::post('/user/user_login', [ClientDashboard::class, 'login'])->name('user.user_login');
+
+
+Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($router) {
+
+    // user management
+    Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
+    Route::post('/user/update', [ClientDashboard::class, 'user_update']);
+    Route::post('/user/role/request/submit', [ClientDashboard::class, 'user_request_personal_info_submit']);
+
+
+    
+   
+    Route::post('/product/create', [ProductController::class, 'product_add']);
+    Route::get('/specific/product/show', [ProductController::class, 'specific_product_show']);
+
+    Route::post('/product/edit', [ProductController::class, 'product_edit']);
+
+    Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
+
+    Route::get('/category/show', [ProductController::class, 'category_show']);
+    Route::get('/subcategory/show', [ProductController::class, 'sub_category_show']);
+});
+
+
+
 
 
 
@@ -84,41 +122,6 @@ Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth']], function ($router
 
     Route::post('/admin/product/delete', [VendorManagement::class, 'product_delete']);
 });
-
-
-
-// ================ user or vendor authentication ========================== 
-
-
-// user or vendor login and registration and check
-Route::post('/user/sign_up', [RegController::class, 'regisign_upster'])->name('user.sign_up');
-Route::post('/user/user_login', [ClientDashboard::class, 'login'])->name('user.user_login');
-
-
-Route::group(['middleware' => ['jwt.role:userbasic', 'jwt.auth']], function ($router) {
-
-    // user management
-    Route::get('/user/show/{id}', [ClientDashboard::class, 'user_show']);
-    Route::post('/user/update', [ClientDashboard::class, 'user_update']);
-    Route::post('/user/role/request/submit', [ClientDashboard::class, 'user_request_personal_info_submit']);
-
-
-    
-   
-    Route::post('/product/create', [ProductController::class, 'product_add']);
-    Route::get('/specific/product/show', [ProductController::class, 'specific_product_show']);
-
-    Route::post('/product/edit', [ProductController::class, 'product_edit']);
-
-    Route::get('/product/delete/{id}', [ProductController::class, 'delete_product']);
-
-    Route::get('/category/show', [ProductController::class, 'category_show']);
-    Route::get('/subcategory/show', [ProductController::class, 'sub_category_show']);
-});
-
-
-
-
 
 
 
