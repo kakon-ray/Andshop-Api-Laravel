@@ -46,6 +46,7 @@ class RegController extends Controller
                     'email' => $request->email,
                     'expired_at' => now()->addMinutes(15),
                     'password' => Hash::make($request->password),
+                     'status' => 0
                 ]);
             } catch (\Exception $err) {
                 $user = null;

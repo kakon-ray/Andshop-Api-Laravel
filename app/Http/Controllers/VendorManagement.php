@@ -56,11 +56,16 @@ class VendorManagement extends Controller
 
     public function vendor_manage(Request $request)
     {
-        $users = UserBasic::all();
+        $users = UserBasic::where('role','Vendor')->get();
         if ($users) {
             return response()->json([
-                'success' => false,
+                'success' => true,
                 'users' => $users,
+            ]);
+        }else{
+            return response()->json([
+                'success' => true,
+                'users' => [],
             ]);
         }
     }

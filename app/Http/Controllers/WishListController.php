@@ -57,7 +57,7 @@ class WishListController extends Controller
     }
 
 
-    public function show_cartlist(Request $request)
+    public function show_wishlist(Request $request)
     {
 
         $wishlist = WishList::where('user_id', $request->user_id)->get();
@@ -65,7 +65,7 @@ class WishListController extends Controller
         if ($wishlist->isEmpty()) {
             return response()->json([
                 'success' => false,
-                'msg' => 'No items in the wishlist'
+                'msg' => 'No items in the cart'
             ]);
         }
 
@@ -79,10 +79,15 @@ class WishListController extends Controller
                     'name',
                     'price',
                     'quantity',
-                    'image'
+                    'image',
+                ]);
+            })
+        ]);
+    }
 
-                    'image'
-uest $request)
+
+    
+    public function destroy(Request $request)
     {
         try {
 
@@ -91,9 +96,10 @@ uest $request)
             if (!$wishlist) {
                 return response()->json([
                     'success' => false,
-                    'msg' => 'Cart item not found'
+                    'msg' => 'Wishlist item not found'
                 ], 404);
             }
+
 
             $wishlist->delete();
 

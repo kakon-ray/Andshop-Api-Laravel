@@ -33,7 +33,7 @@ Route::post('/edit/cartlist', [CartListController::class, 'update_cartquantity']
 
 // wishlist manage
 Route::post('/add/wishlist', [WishListController::class, 'store']);
-Route::get('/show/wishlist/{user_id}', [WishListController::class, 'show_cartlist']);
+Route::get('/show/wishlist/{user_id}', [WishListController::class, 'show_wishlist']);
 Route::get('/delete/wishlist/{id}', [WishListController::class, 'destroy']);
 
 
